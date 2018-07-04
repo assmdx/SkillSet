@@ -1,0 +1,16 @@
+{
+  "name":"assmdx",
+  "skillset": {
+    "JavaScript":{
+      "nodejs":{
+        "egg.js":1,
+        "express":1
+      }
+    },
+    "html":1,
+    "java":1,
+    "C#":1,
+    "C":1,
+    "algorithm":1
+  }
+}

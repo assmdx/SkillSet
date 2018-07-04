@@ -1,12 +1,12 @@
 import convert from './convert'
-import nex from './nex.json'
+import assmdx from './assmdx.json'
 
 window.onload = () => {
 
   const editor = ace.edit("editor")
   const JsonMode = ace.require("ace/mode/json").Mode
   editor.session.setMode(new JsonMode())
-  editor.setValue(JSON.stringify(nex, null, '  '))
+  editor.setValue(JSON.stringify(assmdx, null, '  '))
 
   const km = window.km = new kityminder.Minder()
   km.renderTo('#minder-view')
