@@ -5,6 +5,10 @@
       "nodejs":{
         "egg.js":1,
         "express":1
+      },
+      "database":{
+        "mongodb":2,
+        "redis":1
       }
     },
     "html":1,

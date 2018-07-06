@@ -31,6 +31,10 @@ SkillSet uses [Baidu FEX team](http://fex.baidu.com/)'s [Kity](https://github.co
       "nodejs":{
         "egg.js":1,
         "express":1
+      },
+      "database":{
+        "mongodb":2,
+        "redis":1
       }
     },
     "html":1,
@@ -41,8 +45,9 @@ SkillSet uses [Baidu FEX team](http://fex.baidu.com/)'s [Kity](https://github.co
   }
 }
 
+
 ```
 
 ### Generated Mind Map
 
-![skill-set.png](docs/skill-set-assmdx.png)
+![skill-set.png](docs/skill-set.png)
