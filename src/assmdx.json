@@ -9,11 +9,14 @@
       "database":{
         "mongodb":2,
         "redis":1
-      }
+      },
+      "scoket.io":1
     },
     "html":1,
     "java":1,
-    "C#":1,
+    "C#":{
+      "RESTful API":1
+    },
     "C":1,
     "algorithm":1
   }
