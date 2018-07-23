@@ -59,4 +59,4 @@ SkillSet uses [Baidu FEX team](http://fex.baidu.com/)'s [Kity](https://github.co
 
 ### Generated Mind Map
 
-![skill-set.png](docs/skill-set.png)
+![skill-set.png](docs/skill-set1.png)
