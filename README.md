@@ -35,14 +35,15 @@ SkillSet uses [Baidu FEX team](http://fex.baidu.com/)'s [Kity](https://github.co
       "database":{
         "mongodb":2,
         "redis":1
-      },
+      },      
       "scoket.io":1,
       "RegExp":1
     },
     "html":1,
     "java":1,
     "C#":{
-      "RESTful API":1
+      "RESTful API":1,
+      "websocket":1
     },
     "C":1,
     "algorithm":1,

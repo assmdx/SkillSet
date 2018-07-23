@@ -16,7 +16,8 @@
     "html":1,
     "java":1,
     "C#":{
-      "RESTful API":1
+      "RESTful API":1,
+      "websocket":1
     },
     "C":1,
     "algorithm":1,
