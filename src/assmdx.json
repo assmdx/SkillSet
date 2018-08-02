@@ -1,7 +1,7 @@
 {
   "name":"assmdx",
   "skillset": {
-    "JavaScript":{
+    "es6":{
       "nodejs":{
         "egg.js":1,
         "express":1
@@ -11,19 +11,29 @@
         "redis":1
       },
       "scoket.io":1,
-      "RegExp":1
+      "RegExp":1,
+      "hybirdApp":{
+          "cordova":1
+      }
     },
-    "html":1,
     "java":1,
     "C#":{
       "RESTful API":1,
       "websocket":1
     },
     "C":1,
+    "C++":1,
     "algorithm":1,
     "version control tools":{
-      "Git":1,
+      "Git":2,
       "svn":1
+    },
+    "linux":{
+        "docker":1
+    },
+    "front end":{
+        "html":1,
+        "vue":1
     }
   }
 }
