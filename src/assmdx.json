@@ -14,6 +14,13 @@
       "RegExp":1,
       "hybirdApp":{
           "cordova":1
+      },
+      "front-end":{
+          "vue":1,
+          "webpack":1
+      },
+      "nativeApp":{
+          "electron":1
       }
     },
     "java":1,
@@ -31,9 +38,9 @@
     "linux":{
         "docker":1
     },
-    "front end":{
-        "html":1,
-        "vue":1
+    "อ๘าณ":{
+        "HTML":1,
+        "css":1
     }
   }
 }
