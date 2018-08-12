@@ -3,8 +3,9 @@
   "skillset": {
     "es6":{
       "nodejs":{
-        "egg.js":1,
-        "express":1
+        "egg.js":2,
+        "express":2,
+        "hapi.js":1
       },
       "database":{
         "mongodb":2,
@@ -25,8 +26,7 @@
     },
     "java":1,
     "C#":{
-      "RESTful API":1,
-      "websocket":1
+      "RESTful API":1
     },
     "C":1,
     "C++":1,
@@ -38,9 +38,7 @@
     "linux":{
         "docker":1
     },
-    "อ๘าณ":{
-        "HTML":1,
-        "css":1
-    }
+    "HTML":1,
+    "css":1
   }
 }
