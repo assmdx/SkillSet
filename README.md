@@ -25,34 +25,52 @@ SkillSet uses [Baidu FEX team](http://fex.baidu.com/)'s [Kity](https://github.co
 
 ```json
 {
-  "name":"assmdx",
+  "name": "assmdx",
   "skillset": {
-    "JavaScript":{
-      "nodejs":{
-        "egg.js":1,
-        "express":1
+    "es6": {
+      "nodejs": {
+        "egg.js": 2,
+        "express": 2,
+        "hapi.js": 1
       },
-      "database":{
-        "mongodb":2,
-        "redis":1
-      },      
-      "scoket.io":1,
-      "RegExp":1
+      "database": {
+        "mongodb": 2,
+        "redis": 1
+      },
+      "scoket.io": 1,
+      "RegExp": 1,
+      "hybirdApp": {
+        "cordova": 1
+      },
+      "front-end": {
+        "html":2,
+        "css":1,
+        "vue": 1,
+        "react": 1,
+        "webpack": 1
+      },
+      "nativeApp": {
+        "electron": 1
+      }
     },
-    "html":1,
-    "java":1,
-    "C#":{
-      "RESTful API":1,
-      "websocket":1
+    "java": 1,
+    "C#": {
+      "RESTful API": 1
     },
-    "C":1,
-    "algorithm":1,
-    "version control tools":{
-      "Git":1,
-      "svn":1
-    }
+    "C": 1,
+    "C++": 1,
+    "algorithm": 1,
+    "version control tools": {
+      "Git": 2,
+      "svn": 1
+    },
+    "linux": {
+      "docker": 2
+    },
+    "python": 1
   }
 }
+
 
 
 ```
