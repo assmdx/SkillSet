@@ -1,7 +1,7 @@
 # SkillSet
 A simple JSON format for skill sets and a mind map generator
 
-[Demo](http://nexzhu.github.io/SkillSet/)
+[Demo](https://www.ilovegirl.top/SkillSet/)
 
 ## Background
 
