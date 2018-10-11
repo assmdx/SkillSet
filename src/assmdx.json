@@ -1,46 +1,55 @@
 {
   "name": "assmdx",
   "skillset": {
-    "es6": {
-      "nodejs": {
-        "egg.js": 2,
-        "express": 2,
-        "hapi.js": 1
+    "web System":{
+      "front-end":{
+        "UI":{
+          "html":1,
+          "css":1
+        },
+        "framework":{
+          "build":{
+            "webpack":1
+          },
+          "develop":{
+            "vue":1,
+            "react":1
+          }
+        },
+        "language":{
+          "es6":1
+        }
       },
-      "database": {
-        "mongodb": 2,
-        "redis": 1
+      "server":{
+        "framework":{
+          "egg":1,
+          "express":1,
+          "hapi":1,
+          "C# webApi":1
+        },
+        "database":{
+          "mongodb":2,
+          "redis":1,
+          "mysql":2
+        }
       },
-      "scoket.io": 1,
-      "RegExp": 1,
-      "hybirdApp": {
-        "cordova": 1
+      "connect Server And front-end":{
+        "graphql":1,
+        "RESTfulApi":1
       },
-      "front-end": {
-        "html":2,
-        "css":1,
-        "vue": 1,
-        "react": 1,
-        "webpack": 1
-      },
-      "nativeApp": {
-        "electron": 1
+      "deploy":{
+        "docker":1
       }
     },
-    "java": 1,
-    "C#": {
-      "RESTful API": 1
-    },
-    "C": 1,
-    "C++": 1,
-    "algorithm": 1,
     "version control tools": {
       "Git": 2,
       "svn": 1
     },
-    "linux": {
-      "docker": 2
+    "mobile App":{
+      "cordova":1
     },
-    "python": 1
+    "desktop App":{
+      "Electron":1
+    }
   }
 }
