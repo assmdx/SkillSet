@@ -1,11 +1,19 @@
 {
   "name": "assmdx",
   "skillset": {
+    "Computer Vision System":1,
     "web System":{
-      "front-end":{
+      "mobile Application UI":{
+        "cordova":1
+      },
+      "desktop Application UI":{
+        "Electron":1
+      },
+      "web-front-end":{
         "UI":{
           "html":1,
-          "css":1
+          "css":1,
+          "UI-framework":2
         },
         "framework":{
           "build":{
@@ -44,12 +52,6 @@
     "version control tools": {
       "Git": 2,
       "svn": 1
-    },
-    "mobile App":{
-      "cordova":1
-    },
-    "desktop App":{
-      "Electron":1
     }
   }
 }
