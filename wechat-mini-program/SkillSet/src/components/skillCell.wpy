@@ -1,0 +1,37 @@
+<style tyle="less">
+
+</style>
+<template>
+
+</template>
+<script>
+  import wepy from 'wepy'
+
+  export default class SkillCell extends wepy.component{
+    data ={}
+    events={}
+    methods={}
+    onLoad={}
+  }
+  /****
+   *
+   * node 包含 children[id] parent:id value:name status:hidden | display
+   * node 有2种状态:
+   * 1.折叠状态,所有子node均不显示
+   * 2.展开状态,子node可以显示也可以不显示
+   *
+   * node 有5种行为
+   * 3.被点击删除后,node 及子node全部删除
+   * 4.被点击添加node,添加一个子node
+   * 5.被点击展开,以折叠状态显示所有子node
+   * 6.被修改name
+   *
+   * 7.被点击折叠,隐藏所有子node
+   *
+   * 数据结构
+   * node:{
+   *     children:[node]
+   *     parent:
+   * }
+   */
+</script>

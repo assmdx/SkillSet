@@ -1,0 +1,16 @@
+<style tyle="less">
+
+</style>
+<template>
+
+</template>
+<script>
+  import wepy from 'wepy'
+
+  export default class Footer extends wepy.component{
+    data ={}
+    events={}
+    methods={}
+    onLoad={}
+  }
+</script>

@@ -1,0 +1,33 @@
+<style lang="less">
+  @import '../style/weui.less';
+</style>
+
+<template>
+  <view class="weui-flex">
+    <view class="weui-flex__item">
+      
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import SkillCell from '../components/skillCell.wpy'
+  import Footer from '../components/footer.wpy'
+
+  export default class Tree extends wepy.page{
+    config={
+      navigationBarTitleText: 'SkillSet'
+    }
+    components={
+      SkillCell:SkillCell,
+      Footer:Footer
+    }
+    data={}
+    computed={}
+    methods={}
+    events={}
+    onLoad(){
+    }
+  }
+</script>
