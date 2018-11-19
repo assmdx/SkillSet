@@ -7,11 +7,7 @@
 <script>
   import wepy from 'wepy'
 
-  export default class SkillCell extends wepy.component{
-    data ={}
-    events={}
-    methods={}
-    onLoad={}
+  export default class SkillCell extends wepy.component {
   }
   /****
    *
