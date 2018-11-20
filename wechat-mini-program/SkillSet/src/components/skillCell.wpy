@@ -1,13 +1,85 @@
 <style tyle="less">
-
+  .skillCellImg {
+    margin-right:5px;
+    vertical-align: middle;
+    width:20px;
+    height: 20px;
+  }
+  .deleteClass {
+    background-color: red;
+  }
+  .editClass {
+    background-color: cornflowerblue;
+  }
+  .addClass {
+    background-color: #0BB20C;
+  }
 </style>
 <template>
-
+  <view class="page__bd">
+      <repeat for="{{skills}}" key="index" item="item">
+        <view class="weui-cells weui-cells_after-title">
+          <view class="weui-cell"
+              @touchstart = "touchStarted"
+              @touchmove = "touchMoving"
+              @touchend = "touchEnded"
+        >
+          <view class="weui-cell__bd">{{item.floor}}</view>
+          <view class="weui-cell__bd">{{item.name}}</view>
+          <view class="weui-cell__ft">
+            <image class="skillCellImg" src="../images/add.png"></image>
+          </view>
+          <view class="weui-cell__ft">
+            <image class="skillCellImg" src="../images/edit.png"></image>
+          </view>
+          <view class="weui-cell__ft">
+            <image class="skillCellImg" src="../images/delete.png"></image>
+          </view>
+        </view>
+        </view>
+        <view class="weui-cell weui-cell_input">
+          <view class="weui-cell__hd">
+            <view class="weui-label">技能名称</view>
+          </view>
+          <view class="weui-cell__bd">
+            <input class="weui-input" placeholder="请输入技能名称" bindinput="changeNewSkillValue"/>
+          </view>
+          <view class="weui-cell__ft" @tap="addSkill({{index}} , {{item}})">
+            <icon type="success_no_circle" size="23" color="#E64340"></icon>
+          </view>
+        </view>
+      </repeat>
+  </view>
 </template>
 <script>
   import wepy from 'wepy'
+  import TestMixin from '../mixins/test'
 
   export default class SkillCell extends wepy.component {
+    data = {
+      newSkill: ''
+    }
+    mixins = [TestMixin]
+    methods = {
+      changeNewSkillValue(event) {
+        this.newSkill = event.detail.value
+      },
+      addSkill(index, item) {
+        console.log(this.newSkill)
+        console.log(index)
+        this.skills.splice(index + 1, 0, {
+          name: this.newSkill,
+          children: [],
+          floor: item.floor + 1,
+          status: false,
+          img: '../images/skillCell_down.png'
+        })
+        console.log(this.skills)
+      }
+    }
+    changeStatus(e) {
+
+    }
   }
   /****
    *
