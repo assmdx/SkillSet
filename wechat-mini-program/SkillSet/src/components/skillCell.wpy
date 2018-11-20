@@ -5,8 +5,19 @@
     width:20px;
     height: 20px;
   }
+  .button-sp-area{
+    margin: 0 auto;
+    padding-top: 15px;
+    padding-bottom:15px;
+    width: 88%;
+  }
+  .skillTreeImg{
+    width: 100%;
+    height:auto;
+  }
 </style>
 <template>
+  <canvas class="skillTreeImg" canvas-id="skillTree"></canvas>
   <view class="page__bd">
       <repeat for="{{skills}}" key="index" item="item">
         <view class="weui-cells weui-cells_after-title">
@@ -52,6 +63,11 @@
         </view>
       </repeat>
   </view>
+  <view class="page__bd page__bd_spacing">
+    <view class="button-sp-area">
+      <button class="weui-btn" type="primary" bindtap="generateSkillTreeImg">生成技能图</button>
+    </view>
+  </view>
 </template>
 <script>
   import wepy from 'wepy'
@@ -92,6 +108,26 @@
           }
         })
         this.skills.splice(index, num)
+      },
+      generateSkillTreeImg() {
+        let Treedata = this.getTreeData()
+      }
+    }
+    getTreeData() {
+      let _skills = this.skills
+      const l = _skills.length
+      let skillsTreeObj = {}
+      skillsTreeObj[ _skills[ l - 1 ].name ] = 1
+      let i = l - 2
+      while (i >= 0) {
+        if (_skills[i].floor === _skills[i + 1].floor) {
+          skillsTreeObj[_skills[i].name] = 1
+        } else {
+          let obj1 = {}
+          obj1[_skills[i].name] = skillsTreeObj
+          skillsTreeObj = obj1
+        }
+        i--
       }
     }
   }
@@ -106,12 +142,12 @@
    * //3.被点击删除后,node 及子node全部删除
    * //4.被点击添加node,添加一个子node
    * X 5.被点击展开,以折叠状态显示所有子node
-   * 6.被修改name
+   * X 6.被修改name
    *
    * X 7.被点击折叠,隐藏所有子node
    *
    * 数据结构
-   * node:{
+   * X node:{
    *     children:[node]
    *     parent:
    * }

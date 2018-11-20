@@ -1,25 +1,13 @@
 <style lang="less">
   @import '../style/weui.less';
-  .button-sp-area{
-    margin: 0 auto;
-    padding-top: 15px;
-    padding-bottom:15px;
-    width: 80%;
-  }
 </style>
 
 <template>
   <view class="page">
     <SkillCell/>
-    <view class="page__bd page__bd_spacing">
-      <view class="button-sp-area">
-        <button class="weui-btn" type="primary">生成技能图</button>
-      </view>
-    </view>
     <Footer/>
   </view>
 </template>
-
 <script>
   import wepy from 'wepy'
   import SkillCell from '../components/skillCell'
