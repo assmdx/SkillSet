@@ -32,7 +32,7 @@
           <view class="weui-cell__ft">
             <image class="skillCellImg" src="../images/edit.png"></image>
           </view>
-          <view class="weui-cell__ft">
+          <view class="weui-cell__ft" @tap="deleteSkill({{index}} , {{item}})">
             <image class="skillCellImg" src="../images/delete.png"></image>
           </view>
         </view>
@@ -74,7 +74,19 @@
           status: false,
           img: '../images/skillCell_down.png'
         })
-        console.log(this.skills)
+      },
+      deleteSkill(index, item) {
+        let num = 1
+        let keepOn = true
+        this.skills.forEach((v, i) => {
+          if (i > index && v.floor > item.floor && keepOn) {
+            num++
+          }
+          if (i > index && v.floor <= item.floor) {
+            keepOn = false
+          }
+        })
+        this.skills.splice(index, num)
       }
     }
     changeStatus(e) {
