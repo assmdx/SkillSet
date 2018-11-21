@@ -1,5 +1,5 @@
 {
-  "name": "skillset",
+  "name": "MySkills",
   "version": "0.0.2",
   "description": "skill-set wechat program. https://github.com/assmdx/SkillSet",
   "main": "dist/app.js",
@@ -17,16 +17,9 @@
   "author": "assmdx <assmdx183@163.com>",
   "license": "MIT",
   "dependencies": {
-    "kity": "^2.0.4",
-    "kityminder-core": "^1.4.50",
-    "redux": "^3.7.2",
-    "redux-actions": "^2.2.1",
-    "redux-promise": "^0.5.3",
     "wepy": "^1.6.0",
-    "wepy-async-function": "^1.4.4",
-    "wepy-com-toast": "^1.0.2",
-    "wepy-plugin-imagemin": "^1.5.3",
-    "wepy-redux": "^1.5.3"
+    "wepy-async-function": "^1.4.7",
+    "wepy-plugin-imagemin": "^1.5.3"
   },
   "devDependencies": {
     "babel-eslint": "^7.2.1",

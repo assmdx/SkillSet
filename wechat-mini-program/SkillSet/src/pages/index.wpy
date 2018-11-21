@@ -4,6 +4,7 @@
 
 <template>
   <view class="page">
+    <Panel/>
     <SkillCell/>
     <Footer/>
   </view>
@@ -12,6 +13,7 @@
   import wepy from 'wepy'
   import SkillCell from '../components/skillCell'
   import Footer from '../components/footer'
+  import Panel from '../components/panel'
 
   export default class Tree extends wepy.page {
     config = {
@@ -19,7 +21,8 @@
     }
     components = {
       SkillCell: SkillCell,
-      Footer: Footer
+      Footer: Footer,
+      Panel: Panel
     }
   }
 </script>

@@ -17,15 +17,11 @@
   }
 </style>
 <template>
-  <canvas class="skillTreeImg" canvas-id="skillTree"></canvas>
+  <canvas class="skillTreeImg" canvas-id="skillTree" style="display: {{showCanvas}}"></canvas>
   <view class="page__bd">
       <repeat for="{{skills}}" key="index" item="item">
         <view class="weui-cells weui-cells_after-title">
-          <view class="weui-cell"
-              @touchstart = "touchStarted"
-              @touchmove = "touchMoving"
-              @touchend = "touchEnded"
-        >
+          <view class="weui-cell">
           <view class="weui-cell__bd">{{item.floor}}</view>
           <view class="weui-cell__bd">{{item.name}}</view>
           <view class="weui-cell__ft" @tap="enableAdd({{index}} , {{item}})">
@@ -76,7 +72,7 @@
     data = {
       newSkill: '',
       deviceWidth: wx.getSystemInfoSync().windowWidth,
-      colors:['AliceBlue','AntiqueWhite','Aqua','Aquamarine','Black','Blue']
+      colors: ['DarkGreen', 'DarkRed', 'Green', 'Black', 'Blue', 'Pink']
     }
     mixins = [TestMixin]
     methods = {
@@ -87,26 +83,26 @@
         this.skills.splice(index + 1, 0, {
           name: this.newSkill,
           floor: item.floor + 1,
-          showEdit:"none",
-          showAdd:"none"
+          showEdit: 'none',
+          showAdd: 'none'
         })
-        this.skills[index].showAdd = "none"
+        this.skills[index].showAdd = 'none'
         this.newSkill = ''
       },
       enableAdd(index, item) {
-        this.skills[index].showAdd = ""
+        this.skills[index].showAdd = ''
       },
       enableEdit(index, item) {
-        this.skills[index].showEdit = ""
+        this.skills[index].showEdit = ''
       },
       editSkill(index, item) {
         this.skills[index].name = this.newSkill
-        this.skills[index].showEdit = "none"
+        this.skills[index].showEdit = 'none'
         this.newSkill = ''
       },
       deleteSkill(index, item) {
-        if(index === 0 ) {
-          return;
+        if (index === 0) {
+          return
         }
         let num = 1
         let keepOn = true
@@ -121,25 +117,25 @@
         this.skills.splice(index, num)
       },
       generateSkillTreeImg() {
-        let getRandomNum = (Min,Max) =>
-        {
-          let Range = Max - Min;
-          let Rand = Math.random();
-          return(Min + Math.round(Rand * Range));
+        this.showPanel = 'none'
+        this.showCanvas = ''
+        let getRandomNum = function(Min, Max) {
+          let Range = Max - Min
+          let Rand = Math.random()
+          return (Min + Math.round(Rand * Range))
         }
         let Treedata = this.getTreeData()
-        console.log(Treedata)
-        let ctx = wx.createCanvasContext('skillTree',this)
+        let ctx = wx.createCanvasContext('skillTree', this)
         ctx.setFontSize(15)
-        Treedata.forEach((item,index) => {
+        Treedata.forEach((item, index) => {
           ctx.fillText(item.name, item.x, item.y)
           ctx.setLineWidth(1)
-          if(index > 0){
+          if (index > 0) {
             let fatherIndex = item.father
-            ctx.setStrokeStyle(this.colors[getRandomNum(0,5)])
+            ctx.setStrokeStyle(this.colors[getRandomNum(0, 5)])
             ctx.beginPath()
             ctx.moveTo(Treedata[fatherIndex].x, Treedata[fatherIndex].y)
-            ctx.quadraticCurveTo(Treedata[fatherIndex].x,Treedata[fatherIndex].y,item.x, item.y)
+            ctx.quadraticCurveTo(Treedata[fatherIndex].x, Treedata[fatherIndex].y, item.x, item.y)
             ctx.stroke()
           }
         })
@@ -148,57 +144,37 @@
     }
     getTreeData() {
       let _skills = this.skills
-      //获取每个skill渲染的位置
+      // 获取每个skill渲染的位置
       let heightArr = Array.apply(null, Array(_skills.length)).map(x => 0)
       const l = _skills.length
-      _skills.map((v,index) => {
-        index === 0
-          ? (_skills[index]["y"] = 300)
-          : (_skills[index]["y"] = heightArr[_skills[index].floor] + 20)
-        _skills[index]["x"] = _skills[index].floor * 75 - 70
-        heightArr[_skills[index].floor] += 30
+      _skills.map((v, index) => {
+        let thisFloor = _skills[index].floor
+        if (index === 0) {
+          _skills[index]['y'] = 300
+        } else if (index > 1 && heightArr[thisFloor] === 0) {
+          _skills[index]['y'] = heightArr[thisFloor - 1]
+          heightArr[thisFloor] = heightArr[thisFloor - 1]
+        } else if (index > 1 && heightArr[thisFloor] !== 0) {
+          _skills[index]['y'] = heightArr[thisFloor] + 30
+          heightArr[thisFloor] += 30
+        } else {
+          _skills[index]['y'] = 30
+          heightArr[thisFloor] += 30
+        }
+        _skills[index]['x'] = _skills[index].floor * 75 - 70
       })
 
-      //找到每个skill的父亲
-      let lastChildIndex = l -1
-      let i = l - 2
+      // 找到每个skill的父亲
+      let i = l - 1
       while (i >= 0) {
-        if (_skills[i].floor === _skills[i + 1].floor) {
-        } else {
-          for(let j = i + 1 ; j <= lastChildIndex ;j++) {
-            _skills[j]["father"] = i
-          }
-          lastChildIndex = i
+        let j = i - 1
+        while (j >= 0 && _skills[j].floor >= _skills[i].floor) {
+          j--
         }
+        _skills[i]['father'] = j
         i--
       }
       return _skills
     }
   }
-  /****
-   *
-   * node 包含 children[id] parent:id value:name status:hidden | display
-   * node 有2种状态:
-   * X 1.折叠状态,所有子node均不显示
-   * X 2.展开状态,子node可以显示也可以不显示
-   *
-   * node 有5种行为
-   * //3.被点击删除后,node 及子node全部删除
-   * //4.被点击添加node,添加一个子node
-   * X 5.被点击展开,以折叠状态显示所有子node
-   * X 6.被修改name
-   *
-   * X 7.被点击折叠,隐藏所有子node
-   *
-   * 数据结构
-   * X node:{
-   *     children:[node]
-   *     parent:
-   * }
-   * canvas
-   *
-   * 2.中间填充文字，同一级别文字在同一列 min width :5 min Height :5 max width : device width - 5 max height :max height -5
-   * 3.父子矩形之间通过贝塞尔曲线连接，曲线随机色彩，(色彩参照UI-design下的思维导图)
-   *
-   */
 </script>
