@@ -2,4 +2,4 @@
 
  一个生成技能树的小程序,使用wepy. 
 
-![](./UI-Design/example.png)
+![](UI-Design/example.png)
