@@ -17,6 +17,8 @@
   "author": "assmdx <assmdx183@163.com>",
   "license": "MIT",
   "dependencies": {
+    "kity": "^2.0.4",
+    "kityminder-core": "^1.4.50",
     "redux": "^3.7.2",
     "redux-actions": "^2.2.1",
     "redux-promise": "^0.5.3",

@@ -6,7 +6,7 @@ window.onload = () => {
   const editor = ace.edit("editor")
   const JsonMode = ace.require("ace/mode/json").Mode
   editor.session.setMode(new JsonMode())
-  editor.setValue(JSON.stringify(assmdx, null, '  '))
+    editor.setValue(JSON.stringify(assmdx, null, '  '))
 
   const km = window.km = new kityminder.Minder()
   km.renderTo('#minder-view')

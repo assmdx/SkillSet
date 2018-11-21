@@ -5,31 +5,27 @@ export default class testMixin extends wepy.mixin {
     skills:[
       {
         name:'skills',
-        children:[1,2],
         floor:1,
-        status:false, //false 代表折叠，隐藏状态
-        img:"../images/skillCell_down.png"
+        showEdit:"none",
+        showAdd:"none"
       },
       {
         name:'react',
-        children:[],
         floor:2,
-        status:false, //false 代表折叠，隐藏状态
-        img:"../images/skillCell_down.png"
+        showEdit:"none",
+        showAdd:"none"
       },
       {
         name:'vue',
-        children:[3],
         floor:2,
-        status:false, //false 代表折叠，隐藏状态
-        img:"../images/skillCell_down.png"
+        showEdit:"none",
+        showAdd:"none"
       },
       {
         name:'wepy',
-        children:[],
         floor:3,
-        status:false, //false 代表折叠，隐藏状态
-        img:"../images/skillCell_down.png"
+        showEdit:"none",
+        showAdd:"none"
       }
     ]
   }

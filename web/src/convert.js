@@ -1,5 +1,4 @@
 export default function convert(skillset) {
-  skillset = JSON.parse(skillset)
   try {
     let data = {root: {data: {text: skillset.name + "'s Skill Set"}, children: []}}
     convertRecur(skillset.skillset, data.root.children)
