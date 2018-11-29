@@ -8,3 +8,8 @@
 
 ![skill-set.png](wechat-mini-program/UI-Design/example.png)
 
+## npm包
+你可以使用下面的包，自己做一个思维导图生成工具
+```
+    npm i drawtree
+```

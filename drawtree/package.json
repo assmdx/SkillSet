@@ -1,0 +1,19 @@
+{
+  "name": "drawtree",
+  "version": "1.0.2",
+  "description": "A tool to draw tree by calculate tree node position.",
+  "main": "src/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/assmdx/SkillSet.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "tree",
+    "draw"
+  ],
+  "author": "assmdx",
+  "license": "MIT"
+}
