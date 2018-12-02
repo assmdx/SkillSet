@@ -128,9 +128,9 @@ let drawtree = (treeNode) => {
                         }
                     }
                 }
-                let setLeftThread = (t,i,cl, mscl) => {
+                let setLeftThread = (t,i,cl, modsumcl) => {
                     let li = t.c[0].el
-                    li.tl = cl;
+                    li.tl = cl
                     let diff = (modsumcl - cl.mod) - t.c[0].msel
                     li.mod += diff
                     li.prelim-=diff

@@ -13,11 +13,7 @@
     </view>
     <view class="weui-panel__bd" style="display: {{showPanel}}">
       <view class="weui-media-box weui-media-box_text">
-        <view class="weui-media-box__desc">MySkills是一个用来生成技能树的小程序。</view>
-        <view class="weui-media-box__desc">点击技能栏右边的按钮可以编辑，添加和删除技能。</view>
-        <view class="weui-media-box__info">
-          <view class="weui-media-box__info__meta">点击生成技能树按钮即可生成技能树。</view>
-        </view>
+        <view class="weui-media-box__desc">一个用来生成思维导图的小程序。</view>
       </view>
     </view>
   </view>

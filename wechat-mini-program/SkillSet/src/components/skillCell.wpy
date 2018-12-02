@@ -2,8 +2,8 @@
   .skillCellImg {
     margin-right:9px;
     vertical-align: middle;
-    width:13px;
-    height: 13px;
+    width: 18px;
+    height: 18px;
   }
   .button-sp-area{
     margin: 0 auto;
@@ -13,11 +13,10 @@
   }
   .skillTreeImg {
     width:100%;
-    height:400px;
   }
 </style>
 <template>
-  <canvas class="skillTreeImg" canvas-id="skillTree" style="display: {{showCanvas}}"></canvas>
+  <canvas class="skillTreeImg" canvas-id="skillTree" style="display: {{showCanvas}};height: {{treeHeight}}"></canvas>
   <view class="page__bd">
       <repeat for="{{skills}}" key="index" item="item">
         <view class="weui-cells weui-cells_after-title">
@@ -61,18 +60,107 @@
   </view>
   <view class="page__bd page__bd_spacing">
     <view class="button-sp-area">
-      <button class="weui-btn" type="primary" bindtap="generateSkillTreeImg">生成技能图</button>
+      <button class="weui-btn" type="primary" bindtap="generateSkillTreeImg">生成思维导图</button>
     </view>
   </view>
 </template>
 <script>
   import wepy from 'wepy'
   import TestMixin from '../mixins/test'
+
   export default class SkillCell extends wepy.component {
     data = {
       newSkill: '',
       deviceWidth: wx.getSystemInfoSync().windowWidth,
-      colors: ['DarkGreen', 'DarkRed', 'Green', 'Black', 'Blue', 'Pink']
+      fontSize: 15,
+      nodeWidth: 0,
+      space: 10,
+      treeHeight:400,
+      maxFloor: 1,
+      colors: [
+        'Aqua',
+        'Aquamarine',
+        'Bisque',
+        'Black',
+        'Blue',
+        'BlueViolet',
+        'Brown',
+        'BurlyWood',
+        'CadetBlue',
+        'Chartreuse',
+        'Chocolate',
+        'Coral',
+        'CornflowerBlue',
+        'Crimson',
+        'Cyan',
+        'DarkBlue',
+        'DarkCyan',
+        'DarkGoldenRod',
+        'DarkGray',
+        'DarkGreen',
+        'DarkKhaki',
+        'DarkMagenta',
+        'DarkOliveGreen',
+        'DarkOrange',
+        'DarkOrchid',
+        'DarkRed',
+        'DarkSalmon',
+        'DarkSeaGreen',
+        'DarkSlateBlue',
+        'DarkSlateGray',
+        'DarkSlateGrey',
+        'DarkTurquoise',
+        'DarkViolet',
+        'DeepPink',
+        'DeepSkyBlue',
+        'DimGray',
+        'DodgerBlue',
+        'FireBrick',
+        'ForestGreen',
+        'Fuchsia',
+        'Gold',
+        'GoldenRod',
+        'Gray',
+        'Green',
+        'GreenYellow',
+        'HotPink',
+        'IndianRed',
+        'Indigo',
+        'LawnGreen',
+        'LightCoral',
+        'LightGray',
+        'LightPink',
+        'LightSeaGreen',
+        'LightSlateGray',
+        'Magenta',
+        'Maroon',
+        'MediumBlue',
+        'MediumSlateBlue',
+        'MediumVioletRed',
+        'MidnightBlue',
+        'Olive',
+        'OliveDrab',
+        'Orange',
+        'OrangeRed',
+        'Orchid',
+        'PaleVioletRed',
+        'Purple',
+        'RebeccaPurple',
+        'Red',
+        'RoyalBlue',
+        'SaddleBrown',
+        'Salmon',
+        'SandyBrown',
+        'SeaGreen',
+        'Sienna',
+        'SkyBlue',
+        'SlateBlue',
+        'SteelBlue',
+        'Teal',
+        'Tomato',
+        'Violet',
+        'YellowGreen'
+      ]
     }
     mixins = [TestMixin]
     methods = {
@@ -96,9 +184,11 @@
         this.skills[index].showEdit = ''
       },
       editSkill(index, item) {
-        this.skills[index].name = this.newSkill
+        if ( this.newSkill != '') {
+          this.skills[index].name = this.newSkill
+          this.newSkill = ''
+        }
         this.skills[index].showEdit = 'none'
-        this.newSkill = ''
       },
       deleteSkill(index, item) {
         if (index === 0) {
@@ -126,16 +216,26 @@
         }
         let Treedata = this.getTreeData()
         let ctx = wx.createCanvasContext('skillTree', this)
-        ctx.setFontSize(15)
+        ctx.setFontSize(this.fontSize)
         Treedata.forEach((item, index) => {
-          ctx.fillText(item.name, item.x, item.y)
+          ctx.fillText(
+              item.name
+            , item.x
+            , item.y
+            , this.nodeWith)
           ctx.setLineWidth(1)
           if (index > 0) {
             let fatherIndex = item.father
-            ctx.setStrokeStyle(this.colors[getRandomNum(0, 5)])
+            if (item.floor === 2) {
+              ctx.setStrokeStyle(this.colors[getRandomNum(0, this.colors.length - 1)])
+            }
             ctx.beginPath()
-            ctx.moveTo(Treedata[fatherIndex].x, Treedata[fatherIndex].y)
-            ctx.quadraticCurveTo(Treedata[fatherIndex].x, Treedata[fatherIndex].y, item.x, item.y)
+            ctx.moveTo(Treedata[fatherIndex].x + this.nodeWidth, Treedata[fatherIndex].y)
+            ctx.quadraticCurveTo(Treedata[fatherIndex].x + this.nodeWidth, Treedata[fatherIndex].y, item.x, item.y)
+            ctx.stroke()
+            ctx.beginPath()
+            ctx.moveTo(item.x, item.y)
+            ctx.quadraticCurveTo(item.x, item.y, item.x + this.nodeWidth, item.y)
             ctx.stroke()
           }
         })
@@ -144,25 +244,32 @@
     }
     getTreeData() {
       let _skills = this.skills
+      // 根据层数确定字体大小
+      _skills.forEach(v => {
+        if (v.floor > this.maxFloor) {
+          this.maxFloor = v.floor
+        }
+      })
+      this.nodeWidth = this.deviceWidth / (2 * this.maxFloor)
+
       // 获取每个skill渲染的位置
-      let heightArr = Array.apply(null, Array(_skills.length)).map(x => 0)
+      let startHeight = 0
       const l = _skills.length
       _skills.map((v, index) => {
-        let thisFloor = _skills[index].floor
         if (index === 0) {
-          _skills[index]['y'] = 300
-        } else if (index > 1 && heightArr[thisFloor] === 0) {
-          _skills[index]['y'] = heightArr[thisFloor - 1]
-          heightArr[thisFloor] = heightArr[thisFloor - 1]
-        } else if (index > 1 && heightArr[thisFloor] !== 0) {
-          _skills[index]['y'] = heightArr[thisFloor] + 30
-          heightArr[thisFloor] += 30
+          _skills[index]['y'] = this.fontSize * 2
+          startHeight = this.fontSize * 2
         } else {
-          _skills[index]['y'] = 30
-          heightArr[thisFloor] += 30
+          if (_skills[index - 1].floor < _skills[index].floor) {
+            _skills[index]['y'] = startHeight
+          } else {
+            _skills[index]['y'] = (startHeight += this.fontSize * 2)
+          }
         }
-        _skills[index]['x'] = _skills[index].floor * 75 - 70
+        _skills[index]['x'] = (_skills[index].floor - 1) * 2 * this.nodeWidth
       })
+      //修改canvas的高度
+      this.treeheight = startHeight + 10
 
       // 找到每个skill的父亲
       let i = l - 1
@@ -177,4 +284,11 @@
       return _skills
     }
   }
+  /**
+   * 根节点在左上角
+   * 1/20 deviceWidth
+   * 应该是从父节点右下角开始画 到 子节点的右下角
+   * 从根节点出发的每个分支的颜色要统一
+   *
+   */
 </script>

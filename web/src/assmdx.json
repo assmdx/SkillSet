@@ -9,7 +9,7 @@
       "desktop Application UI":{
         "Electron":1
       },
-      "web-front-end":{
+      "web-front-end":{      	
         "UI":{
           "html":1,
           "css":1,
@@ -38,7 +38,8 @@
         "database":{
           "mongodb":2,
           "redis":1,
-          "mysql":2
+          "mysql":2,
+          "SQLite":1
         }
       },
       "connect Server And front-end":{

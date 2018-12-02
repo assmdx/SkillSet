@@ -8,6 +8,6 @@
   },
   "compileType": "miniprogram",
   "appid": "touristappid",
-  "projectname": "skillset",
+  "projectname": "MySkills",
   "miniprogramRoot": "./dist"
 }

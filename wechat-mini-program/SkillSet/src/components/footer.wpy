@@ -40,10 +40,7 @@
 </style>
 <template>
   <view class="weui-footer">
-    <view class="weui-footer__links">
-      <navigator url="https://github.com/assmdx" class="weui-footer__link">About Me</navigator>
-    </view>
-    <view class="weui-footer__text">Copyright © 2008-2018 Ren Zhenchuan</view>
+    <view class="weui-footer__text">Copyright © 2008-2018 MySkills</view>
   </view>
 </template>
 <script>
