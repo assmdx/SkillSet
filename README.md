@@ -1,6 +1,6 @@
-# MySkills 微信小程序
+# MySkills 思维导图微信小程序
 
-一个生成技能树| 思维导图 的小程序。在微信小程序中搜索 MySkills即可找到。
+## 微信小程序中搜索 MySkills即可找到。
 
 - 使用[wepy](https://tencent.github.io/wepy/)
 - web目录下是web版
