@@ -1,15 +1,20 @@
-# MySkills 思维导图微信小程序
+# 易画图
 
-## 微信小程序中搜索 MySkills即可找到。
+## 介绍
+易画图是一款思维导图软件。微信小程序中搜索 ``易画图``即可找到。
 
-- 使用[wepy](https://tencent.github.io/wepy/)
-- web目录下是web版
-- wechat-mini-program是微信小程序版
+## 背景
+初衷是想做一个在手机上简单易用的思维导图软件，目前已经有类似的软件了，但是还是不要半途而废，把它做好。
 
-![skill-set.png](wechat-mini-program/UI-Design/example.png)
+## 技术
+- 小程序开发框架[wepy](https://wepyjs.github.io/wepy-docs/2.x/)
+- 画图的库[d3-flextree](https://github.com/klortho/d3-flextree)
 
-## npm包
-你可以使用下面的包，自己做一个思维导图生成工具
-```
-    npm i drawtree
-```
+## TODO
+
+- [x] 验证d3-flextree的可用性
+- [ ] 树的展示要美化
+- [ ] 新增，编辑，删除按钮的交互要精简
+- [ ] 分享微信，朋友圈
+
+
