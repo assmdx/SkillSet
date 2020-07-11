@@ -4,25 +4,20 @@
 
 <template>
   <view class="page">
-    <Panel/>
     <SkillCell/>
-    <Footer/>
   </view>
 </template>
+
 <script>
   import wepy from 'wepy'
   import SkillCell from '../components/skillCell'
-  import Footer from '../components/footer'
-  import Panel from '../components/panel'
 
   export default class Tree extends wepy.page {
     config = {
-      navigationBarTitleText: 'SkillSet'
+      navigationBarTitleText: '易画图'
     }
     components = {
-      SkillCell: SkillCell,
-      Footer: Footer,
-      Panel: Panel
+      SkillCell: SkillCell
     }
   }
 </script>

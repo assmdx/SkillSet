@@ -16,7 +16,7 @@
   }
 </style>
 <template>
-  <canvas class="skillTreeImg" canvas-id="skillTree" style="display: {{showCanvas}};height: {{treeHeight}}"></canvas>
+  <canvas class="skillTreeImg" id="skillTree" canvas-id="skillTree" type="2d" style="display: {{showCanvas}};height: {{treeHeight}}"></canvas>
   <view class="page__bd">
       <repeat for="{{skills}}" key="index" item="item">
         <view class="weui-cells weui-cells_after-title">
@@ -67,6 +67,8 @@
 <script>
   import wepy from 'wepy'
   import TestMixin from '../mixins/test'
+  import COLORS from './constants'
+  import {flextree} from 'd3-flextree'
 
   export default class SkillCell extends wepy.component {
     data = {
@@ -77,90 +79,7 @@
       space: 10,
       treeHeight:400,
       maxFloor: 1,
-      colors: [
-        'Aqua',
-        'Aquamarine',
-        'Bisque',
-        'Black',
-        'Blue',
-        'BlueViolet',
-        'Brown',
-        'BurlyWood',
-        'CadetBlue',
-        'Chartreuse',
-        'Chocolate',
-        'Coral',
-        'CornflowerBlue',
-        'Crimson',
-        'Cyan',
-        'DarkBlue',
-        'DarkCyan',
-        'DarkGoldenRod',
-        'DarkGray',
-        'DarkGreen',
-        'DarkKhaki',
-        'DarkMagenta',
-        'DarkOliveGreen',
-        'DarkOrange',
-        'DarkOrchid',
-        'DarkRed',
-        'DarkSalmon',
-        'DarkSeaGreen',
-        'DarkSlateBlue',
-        'DarkSlateGray',
-        'DarkSlateGrey',
-        'DarkTurquoise',
-        'DarkViolet',
-        'DeepPink',
-        'DeepSkyBlue',
-        'DimGray',
-        'DodgerBlue',
-        'FireBrick',
-        'ForestGreen',
-        'Fuchsia',
-        'Gold',
-        'GoldenRod',
-        'Gray',
-        'Green',
-        'GreenYellow',
-        'HotPink',
-        'IndianRed',
-        'Indigo',
-        'LawnGreen',
-        'LightCoral',
-        'LightGray',
-        'LightPink',
-        'LightSeaGreen',
-        'LightSlateGray',
-        'Magenta',
-        'Maroon',
-        'MediumBlue',
-        'MediumSlateBlue',
-        'MediumVioletRed',
-        'MidnightBlue',
-        'Olive',
-        'OliveDrab',
-        'Orange',
-        'OrangeRed',
-        'Orchid',
-        'PaleVioletRed',
-        'Purple',
-        'RebeccaPurple',
-        'Red',
-        'RoyalBlue',
-        'SaddleBrown',
-        'Salmon',
-        'SandyBrown',
-        'SeaGreen',
-        'Sienna',
-        'SkyBlue',
-        'SlateBlue',
-        'SteelBlue',
-        'Teal',
-        'Tomato',
-        'Violet',
-        'YellowGreen'
-      ]
+      colors: COLORS,
     }
     mixins = [TestMixin]
     methods = {
@@ -215,32 +134,47 @@
           return (Min + Math.round(Rand * Range))
         }
         let Treedata = this.getTreeData()
-        let ctx = wx.createCanvasContext('skillTree', this)
-        ctx.setFontSize(this.fontSize)
-        Treedata.forEach((item, index) => {
-          ctx.fillText(
-              item.name
-            , item.x
-            , item.y
-            , this.nodeWith)
-          ctx.setLineWidth(1)
-          if (index > 0) {
-            let fatherIndex = item.father
-            if (item.floor === 2) {
-              ctx.setStrokeStyle(this.colors[getRandomNum(0, this.colors.length - 1)])
-            }
-            ctx.beginPath()
-            ctx.moveTo(Treedata[fatherIndex].x + this.nodeWidth, Treedata[fatherIndex].y)
-            ctx.quadraticCurveTo(Treedata[fatherIndex].x + this.nodeWidth, Treedata[fatherIndex].y, item.x, item.y)
-            ctx.stroke()
-            ctx.beginPath()
-            ctx.moveTo(item.x, item.y)
-            ctx.quadraticCurveTo(item.x, item.y, item.x + this.nodeWidth, item.y)
-            ctx.stroke()
-          }
-        })
-        ctx.draw()
+        
+        console.log(Treedata)
+        // 使用d3 flex tree 
+        const tree = this.transformDataForD3FlexibleTree(Treedata)
+        const query = wx.createSelectorQuery()
+        query.select('#skillTree')
+          .fields({ node: true, size: true })
+          .exec((res) => {
+            console.log(res)
+            const canvas = res[0].node
+            const ctx = canvas.getContext('2d')
+            const dpr = wx.getSystemInfoSync().pixelRatio
+
+            canvas.width = this.deviceWidth * dpr
+            canvas.height = 300 * dpr
+            ctx.scale(dpr, dpr)
+
+            tree.each(node => {
+              ctx.fillText(node.data.name, (node.x + 3) * 40, (node.y + 3) * 40, this.fontSize)
+            })
+          })
       }
+    }
+    transformDataForD3FlexibleTree(TreeData) {
+      for (let i = 0; i < TreeData.length; i++) {
+        const {father, name} = TreeData[i]
+        TreeData[i].size = [name.length, 1]
+        TreeData[i].children = TreeData[i].children || []
+        TreeData[i].name = name
+        if (father >= 0) {
+          TreeData[father].children = TreeData[father].children || []
+          TreeData[father].children.push(TreeData[i])
+        }
+      }
+      console.log(TreeData) 
+      const layout = flextree()
+      const tree = layout.hierarchy(TreeData[0])      
+      layout(tree)
+      console.log(tree)
+      tree.each(node => console.log(node))
+      return tree
     }
     getTreeData() {
       let _skills = this.skills
