@@ -80,7 +80,7 @@
       fontSize: 15,
       nodeWidth: 0,
       space: 10,
-      treeHeight:400,
+      treeHeight:1800,
       maxFloor: 1,
       colors: COLORS,
     }
@@ -141,7 +141,9 @@
         console.log(Treedata)
         // 使用d3 flex tree 
         let tree = this.transformDataForD3FlexibleTree(Treedata)
-        tree = this.adjustTreePosition(tree)
+        tree = this.rotateTreeCoordinate(tree)
+        const {_tree, canvasWidth, canvasHeight} = this.adjustTreePosition(tree)
+        tree = _tree
         const query = wx.createSelectorQuery()
         query.select('#skillTree')
           .fields({ node: true, size: true })
@@ -151,14 +153,33 @@
             const ctx = canvas.getContext('2d')
             const dpr = wx.getSystemInfoSync().pixelRatio
 
-            canvas.width = this.deviceWidth * dpr
-            canvas.height = 300 * dpr
+            canvas.width = canvasWidth * dpr
+            canvas.height = canvasHeight * dpr
             ctx.scale(dpr, dpr)
 
+            console.log(canvas.width, canvas.height, dpr)
+
+            ctx.font = '5px sans-serif'
             tree.each(node => {
-              ctx.fillText(node.data.name, node.x, node.y)
+              console.log(node.data.name, node.x, node.y, ctx);
+              ctx.fillText(node.data.name, node.x, node.y, 50);
+              (node.children || []).forEach(cNode => {
+                this.methods.paintLine(ctx, node.x, node.y, cNode.x, cNode.y)
+              })
             })
           })
+      },
+      paintLine(ctx, sX, sY, eX, eY) {
+        const delta = Math.floor((eY - sY) / 2)
+        const cpx = (sX + eX) / 2
+        const cpy = (sY + eY) / 2 + delta 
+        ctx.beginPath()
+        ctx.moveTo(sX, sY)
+        ctx.quadraticCurveTo(cpx, cpy, eX, eY)
+        const colorIndex = Math.floor(Math.random() * COLORS.length)
+        const lineColor = COLORS[colorIndex]
+        ctx.strokeStyle = lineColor
+        ctx.stroke()
       }
     }
     transformDataForD3FlexibleTree(TreeData) {
@@ -180,6 +201,15 @@
       tree.each(node => console.log(node))
       return tree
     }
+    rotateTreeCoordinate(tree) {
+      tree.each(node => {
+        const tmpX = node.x
+        const tmpY = node.y
+        node.x = tmpY
+        node.y = -tmpX
+      })
+      return tree
+    }
     adjustTreePosition(tree) {
       let minX = Infinity
       let minY = Infinity
@@ -195,15 +225,20 @@
       })
       const scalePercentX = Math.floor(windowWidth / (maxX - minX + 1));
       const scalePercentY = Math.floor(windowHeight / (maxY - minY + 1));
+      const dpr = wx.getSystemInfoSync().pixelRatio
       const scalePercent = scalePercentX < scalePercentY ? scalePercentX : scalePercentY;
       scalePercent === 0 ? 1 : scalePercent;
       console.log(scalePercentX, scalePercentY, scalePercent)
 
       tree.each((node, i)=> {
-        node.x = (node.x + (1-minX)) * scalePercent
-        node.y = (node.y + (1-minY)) * scalePercent
+        node.x = (node.x + (1-minX)) * 50 / dpr
+        node.y = (node.y + (1-minY)) * 50 / dpr
       })
-      return tree
+
+      const canvasWidth = (maxX - minX) * 50
+      const canvasHeight = (maxY - minY) * 50
+
+      return {_tree: tree, canvasWidth, canvasHeight}
     }
     getTreeData() {
       let _skills = this.skills
