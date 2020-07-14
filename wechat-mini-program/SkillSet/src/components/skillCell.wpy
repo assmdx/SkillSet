@@ -12,55 +12,58 @@
     width: 88%;
   }
   .skillTreeImg {
-    width:100%;
+    width: 100vw;
+    height: 100vh;
   }
 </style>
 <template>
-  <canvas class="skillTreeImg" id="skillTree" canvas-id="skillTree" type="2d" style="display: {{showCanvas}};height: {{treeHeight}}"></canvas>
-  <view class="page__bd">
-      <repeat for="{{skills}}" key="index" item="item">
-        <view class="weui-cells weui-cells_after-title">
-          <view class="weui-cell">
-          <view class="weui-cell__bd">{{item.floor}}</view>
-          <view class="weui-cell__bd">{{item.name}}</view>
-          <view class="weui-cell__ft" @tap="enableAdd({{index}} , {{item}})">
-            <image class="skillCellImg" src="../images/add.png"></image>
+  <view> 
+    <canvas class="skillTreeImg" id="skillTree" canvas-id="skillTree" type="2d" style="display: {{showCanvas}};height: {{treeHeight}}"></canvas>
+    <view class="page__bd">
+        <repeat for="{{skills}}" key="index" item="item">
+          <view class="weui-cells weui-cells_after-title">
+            <view class="weui-cell">
+            <view class="weui-cell__bd">{{item.floor}}</view>
+            <view class="weui-cell__bd">{{item.name}}</view>
+            <view class="weui-cell__ft" @tap="enableAdd({{index}} , {{item}})">
+              <image class="skillCellImg" src="../images/add.png"></image>
+            </view>
+            <view class="weui-cell__ft" @tap="enableEdit({{index}} , {{item}})">
+              <image class="skillCellImg" src="../images/edit.png"></image>
+            </view>
+            <view class="weui-cell__ft" @tap="deleteSkill({{index}} , {{item}})">
+              <image class="skillCellImg" src="../images/delete.png"></image>
+            </view>
           </view>
-          <view class="weui-cell__ft" @tap="enableEdit({{index}} , {{item}})">
-            <image class="skillCellImg" src="../images/edit.png"></image>
           </view>
-          <view class="weui-cell__ft" @tap="deleteSkill({{index}} , {{item}})">
-            <image class="skillCellImg" src="../images/delete.png"></image>
+          <view class="weui-cell weui-cell_input" style="display:{{item.showEdit}}">
+            <view class="weui-cell__hd">
+              <view class="weui-label">编辑技能</view>
+            </view>
+            <view class="weui-cell__bd">
+              <input class="weui-input" placeholder="请输入技能名称" bindinput="changeNewSkillValue"/>
+            </view>
+            <view class="weui-cell__ft" @tap="editSkill({{index}} , {{item}})">
+              <icon type="success_no_circle" size="23" color="#E64340"></icon>
+            </view>
           </view>
-        </view>
-        </view>
-        <view class="weui-cell weui-cell_input" style="display:{{item.showEdit}}">
-          <view class="weui-cell__hd">
-            <view class="weui-label">编辑技能</view>
+          <view class="weui-cell weui-cell_input" style="display:{{item.showAdd}}">
+            <view class="weui-cell__hd">
+              <view class="weui-label">新增技能</view>
+            </view>
+            <view class="weui-cell__bd">
+              <input class="weui-input" placeholder="请输入技能名称" bindinput="changeNewSkillValue"/>
+            </view>
+            <view class="weui-cell__ft" @tap="addSkill({{index}} , {{item}})">
+              <icon type="success_no_circle" size="23" color="#E64340"></icon>
+            </view>
           </view>
-          <view class="weui-cell__bd">
-            <input class="weui-input" placeholder="请输入技能名称" bindinput="changeNewSkillValue"/>
-          </view>
-          <view class="weui-cell__ft" @tap="editSkill({{index}} , {{item}})">
-            <icon type="success_no_circle" size="23" color="#E64340"></icon>
-          </view>
-        </view>
-        <view class="weui-cell weui-cell_input" style="display:{{item.showAdd}}">
-          <view class="weui-cell__hd">
-            <view class="weui-label">新增技能</view>
-          </view>
-          <view class="weui-cell__bd">
-            <input class="weui-input" placeholder="请输入技能名称" bindinput="changeNewSkillValue"/>
-          </view>
-          <view class="weui-cell__ft" @tap="addSkill({{index}} , {{item}})">
-            <icon type="success_no_circle" size="23" color="#E64340"></icon>
-          </view>
-        </view>
-      </repeat>
-  </view>
-  <view class="page__bd page__bd_spacing">
-    <view class="button-sp-area">
-      <button class="weui-btn" type="primary" bindtap="generateSkillTreeImg">生成思维导图</button>
+        </repeat>
+    </view>
+    <view class="page__bd page__bd_spacing">
+      <view class="button-sp-area">
+        <button class="weui-btn" type="primary" bindtap="generateSkillTreeImg">生成思维导图</button>
+      </view>
     </view>
   </view>
 </template>
@@ -137,7 +140,8 @@
         
         console.log(Treedata)
         // 使用d3 flex tree 
-        const tree = this.transformDataForD3FlexibleTree(Treedata)
+        let tree = this.transformDataForD3FlexibleTree(Treedata)
+        tree = this.adjustTreePosition(tree)
         const query = wx.createSelectorQuery()
         query.select('#skillTree')
           .fields({ node: true, size: true })
@@ -152,7 +156,7 @@
             ctx.scale(dpr, dpr)
 
             tree.each(node => {
-              ctx.fillText(node.data.name, (node.x + 3) * 40, (node.y + 3) * 40, this.fontSize)
+              ctx.fillText(node.data.name, node.x, node.y)
             })
           })
       }
@@ -174,6 +178,31 @@
       layout(tree)
       console.log(tree)
       tree.each(node => console.log(node))
+      return tree
+    }
+    adjustTreePosition(tree) {
+      let minX = Infinity
+      let minY = Infinity
+      let maxX = -Infinity
+      let maxY = -Infinity
+      const {windowWidth, windowHeight} = wx.getSystemInfoSync()
+      console.log(wx.getSystemInfoSync())
+      tree.each((node, i) => {
+        minX = node.x < minX ? node.x : minX
+        minY = node.y < minY ? node.y : minY
+        maxX = node.x > maxX ? node.x : maxX
+        maxY = node.y > maxY ? node.y : maxY
+      })
+      const scalePercentX = Math.floor(windowWidth / (maxX - minX + 1));
+      const scalePercentY = Math.floor(windowHeight / (maxY - minY + 1));
+      const scalePercent = scalePercentX < scalePercentY ? scalePercentX : scalePercentY;
+      scalePercent === 0 ? 1 : scalePercent;
+      console.log(scalePercentX, scalePercentY, scalePercent)
+
+      tree.each((node, i)=> {
+        node.x = (node.x + (1-minX)) * scalePercent
+        node.y = (node.y + (1-minY)) * scalePercent
+      })
       return tree
     }
     getTreeData() {
@@ -202,7 +231,7 @@
         }
         _skills[index]['x'] = (_skills[index].floor - 1) * 2 * this.nodeWidth
       })
-      //修改canvas的高度
+      // 修改canvas的高度
       this.treeheight = startHeight + 10
 
       // 找到每个skill的父亲
