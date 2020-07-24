@@ -1,0 +1,393 @@
+<style tyle="less">
+.skillCellImg {
+  margin-right: 9px;
+  vertical-align: middle;
+  width: 18px;
+  height: 18px;
+}
+.button-sp-area {
+  margin: 0 auto;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  width: 88%;
+}
+::-webkit-scrollbar {
+}
+</style>
+<template>
+  <canvas
+    id="skillTree"
+    canvas-id="skillTree"
+    type="2d"
+    width="414"
+    height="414"
+    style="width: 100%; display:{{showCanvas}};height: {{canvasHeight}}"
+  ></canvas>
+  <view class="canvas-container">
+    <!-- <view
+      style="width:{{canvasWidth}}px;height:900px;overflow:hidden;"
+    > -->
+    <!-- <canvas
+        canvas-id="skillTree"
+        type="2d"
+        style="width: 414px; height: 414px;"
+      ></canvas> -->
+    <!-- </view> -->
+
+    <view class="page__bd">
+      <repeat for="{{skills}}" key="index" item="item">
+        <view class="weui-cells weui-cells_after-title">
+          <view class="weui-cell">
+            <view class="weui-cell__bd">{{ item.floor }}</view>
+            <view class="weui-cell__bd">{{ item.name }}</view>
+            <view class="weui-cell__ft" @tap="enableAdd({{index}} , {{item}})">
+              <image class="skillCellImg" src="../images/add.png"></image>
+            </view>
+            <view class="weui-cell__ft" @tap="enableEdit({{index}} , {{item}})">
+              <image class="skillCellImg" src="../images/edit.png"></image>
+            </view>
+            <view
+              class="weui-cell__ft"
+              @tap="deleteSkill({{index}} , {{item}})"
+            >
+              <image class="skillCellImg" src="../images/delete.png"></image>
+            </view>
+          </view>
+        </view>
+        <view
+          class="weui-cell weui-cell_input"
+          style="display:{{item.showEdit}}"
+        >
+          <view class="weui-cell__hd">
+            <view class="weui-label">编辑技能</view>
+          </view>
+          <view class="weui-cell__bd">
+            <input
+              class="weui-input"
+              placeholder="请输入技能名称"
+              bindinput="changeNewSkillValue"
+            />
+          </view>
+          <view class="weui-cell__ft" @tap="editSkill({{index}} , {{item}})">
+            <icon type="success_no_circle" size="23" color="#E64340"></icon>
+          </view>
+        </view>
+        <view
+          class="weui-cell weui-cell_input"
+          style="display:{{item.showAdd}}"
+        >
+          <view class="weui-cell__hd">
+            <view class="weui-label">新增技能</view>
+          </view>
+          <view class="weui-cell__bd">
+            <input
+              class="weui-input"
+              placeholder="请输入技能名称"
+              bindinput="changeNewSkillValue"
+            />
+          </view>
+          <view class="weui-cell__ft" @tap="addSkill({{index}} , {{item}})">
+            <icon type="success_no_circle" size="23" color="#E64340"></icon>
+          </view>
+        </view>
+      </repeat>
+    </view>
+    <view class="page__bd page__bd_spacing" style="display:{{showPanel}}">
+      <view class="button-sp-area">
+        <button class="weui-btn" type="primary" bindtap="generateSkillTreeImg">
+          生成思维导图
+        </button>
+      </view>
+    </view>
+  </view>
+</template>
+<script>
+import wepy from 'wepy';
+import TestMixin from '../mixins/test';
+import COLORS from './constants';
+import { flextree } from 'd3-flextree';
+import cloneDeep from 'lodash.clonedeep';
+
+export default class SkillCell extends wepy.component {
+  data = {
+    newSkill: '',
+    deviceWidth: wx.getSystemInfoSync().windowWidth,
+    fontSize: 30,
+    nodeWidth: 0,
+    space: 10,
+    maxFloor: 1,
+    colors: COLORS,
+    canvasWidth: '0px',
+    canvasHeight: 400,
+    treeHeight: 400,
+  };
+  mixins = [TestMixin];
+  methods = {
+    changeNewSkillValue(event) {
+      this.newSkill = event.detail.value;
+    },
+    addSkill(index, item) {
+      this.skills.splice(index + 1, 0, {
+        name: this.newSkill,
+        floor: item.floor + 1,
+        showEdit: 'none',
+        showAdd: 'none',
+      });
+      this.skills[index].showAdd = 'none';
+      this.newSkill = '';
+    },
+    enableAdd(index, item) {
+      this.skills[index].showAdd = '';
+    },
+    enableEdit(index, item) {
+      this.skills[index].showEdit = '';
+    },
+    editSkill(index, item) {
+      if (this.newSkill !== '') {
+        this.skills[index].name = this.newSkill;
+        this.newSkill = '';
+      }
+      this.skills[index].showEdit = 'none';
+    },
+    deleteSkill(index, item) {
+      if (index === 0) {
+        return;
+      }
+      let num = 1;
+      let keepOn = true;
+      this.skills.forEach((v, i) => {
+        if (i > index && v.floor > item.floor && keepOn) {
+          num++;
+        }
+        if (i > index && v.floor <= item.floor) {
+          keepOn = false;
+        }
+      });
+      this.skills.splice(index, num);
+    },
+    generateSkillTreeImg() {
+      this.showCanvas = '';
+      this.canvasHeight = 400;
+      let getRandomNum = function (Min, Max) {
+        let Range = Max - Min;
+        let Rand = Math.random();
+        return Min + Math.round(Rand * Range);
+      };
+      let Treedata = this.getTreeData();
+      let ctx = wx.createCanvasContext('skillTree', this);
+      ctx.setFontSize(this.fontSize);
+      Treedata.forEach((item, index) => {
+        ctx.fillText(item.name, item.x, item.y, this.nodeWith);
+        ctx.setLineWidth(1);
+        if (index > 0) {
+          let fatherIndex = item.father;
+          if (item.floor === 2) {
+            ctx.setStrokeStyle(
+              this.colors[getRandomNum(0, this.colors.length - 1)]
+            );
+          }
+          ctx.beginPath();
+          ctx.moveTo(
+            Treedata[fatherIndex].x + this.nodeWidth,
+            Treedata[fatherIndex].y
+          );
+          ctx.quadraticCurveTo(
+            Treedata[fatherIndex].x + this.nodeWidth,
+            Treedata[fatherIndex].y,
+            item.x,
+            item.y
+          );
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.moveTo(item.x, item.y);
+          ctx.quadraticCurveTo(item.x, item.y, item.x + this.nodeWidth, item.y);
+          ctx.stroke();
+        }
+      });
+      ctx.draw();
+      return;
+
+      // this.canvasWidth = finalWidth;
+      // this.showCanvas = '';
+      // this.canvasHeight = 400;
+
+      // const treeData = this.getTreeData();
+
+      // const clonedTreeData = cloneDeep(treeData);
+      // let tree = this.transformDataForD3FlexibleTree(clonedTreeData);
+      // tree = this.rotateTreeCoordinate(tree);
+      // const { _tree, canvasWidth, canvasHeight } = this.adjustTreePosition(
+      //   tree
+      // );
+      // tree = _tree;
+
+      // const { width, height } = wx.getSystemInfoSync().safeArea;
+      // const finalWidth = canvasWidth > width ? canvasWidth : width;
+      // const finalHeight = canvasHeight > height ? canvasHeight : height;
+
+      /*
+      let ctx = wx.createCanvasContext('skillTree', this)
+      ctx.setFontSize(this.fontSize)
+      tree.each((node) => {
+        ctx.setFillStyle('black');
+        ctx.fillText(node.data.name, node.x, node.y, 30);
+        console.log('fillText',node.data.name, node.x, node.y);
+        ctx.setLineWidth(1);
+        (node.children || []).forEach((cNode) => {
+          const sX = node.x, sY = node.y, eX = cNode.x, eY = cNode.y;
+          const delta = Math.floor((eY - sY) / 2);
+          const cpx = (sX + eX) / 2;
+          const cpy = (sY + eY) / 2 + delta;
+          const colorIndex = Math.floor(Math.random() * COLORS.length);
+          const lineColor = COLORS[colorIndex];
+          ctx.setStrokeStyle(lineColor);
+          ctx.beginPath();
+          ctx.moveTo(sX, sY);
+          ctx.quadraticCurveTo(cpx, cpy, eX, eY);
+          console.log('quadraticCurveTo', cpx, cpy, eX, eY, lineColor);
+          ctx.stroke();
+        });
+      });
+      ctx.draw();
+      */
+
+      /*
+      const that = this;
+      const query = wx.createSelectorQuery();
+      query
+        .select('#skillTree')
+        .fields({ node: true, size: true })
+        .exec((res) => {
+          console.log(res);
+          const canvas = res[0].node;
+          const ctx = canvas.getContext('2d');
+          ctx.font = this.fontSize + 'px sans-serif';
+          tree.each((node) => {
+            console.log(node.data.name, node.x, node.y, ctx);
+            ctx.fillText(node.data.name, node.x, node.y);
+            (node.children || []).forEach((cNode) => {
+              that.methods.paintLine(ctx, node.x, node.y, cNode.x, cNode.y);
+            });
+          });
+          that.$apply();
+        });
+        */
+    },
+    paintLine(ctx, sX, sY, eX, eY) {
+      const delta = Math.floor((eY - sY) / 2);
+      const cpx = (sX + eX) / 2;
+      const cpy = (sY + eY) / 2 + delta;
+      const colorIndex = Math.floor(Math.random() * COLORS.length);
+      const lineColor = COLORS[colorIndex];
+      ctx.beginPath();
+      ctx.moveTo(sX, sY);
+      console.log(eX, eY);
+      ctx.quadraticCurveTo(cpx, cpy, eX, eY);
+      ctx.setStrokeStyle(lineColor);
+      ctx.stroke();
+      ctx.draw();
+    },
+  };
+  transformDataForD3FlexibleTree(TreeData) {
+    for (let i = 0; i < TreeData.length; i++) {
+      const { father, name } = TreeData[i];
+      TreeData[i].size = [name.length, 1];
+      TreeData[i].children = TreeData[i].children || [];
+      TreeData[i].name = name;
+      if (father >= 0) {
+        TreeData[father].children = TreeData[father].children || [];
+        TreeData[father].children.push(TreeData[i]);
+      }
+    }
+    console.log(TreeData);
+    const layout = flextree();
+    const tree = layout.hierarchy(TreeData[0]);
+    layout(tree);
+    console.log(tree);
+    tree.each((node) => console.log(node));
+    return tree;
+  }
+  rotateTreeCoordinate(tree) {
+    tree.each((node) => {
+      const tmpX = node.x;
+      const tmpY = node.y;
+      node.x = tmpY;
+      node.y = -tmpX;
+    });
+    return tree;
+  }
+  adjustTreePosition(tree) {
+    let minX = Infinity;
+    let minY = Infinity;
+    let maxX = -Infinity;
+    let maxY = -Infinity;
+    tree.each((node, i) => {
+      minX = node.x < minX ? node.x : minX;
+      minY = node.y < minY ? node.y : minY;
+      maxX = node.x > maxX ? node.x : maxX;
+      maxY = node.y > maxY ? node.y : maxY;
+    });
+
+    const PERCENT = 3;
+
+    tree.each((node, i) => {
+      console.log(node.x, node.y);
+      node.x = (node.x + (1 - minX)) * this.fontSize * PERCENT;
+      node.y = (node.y + (1 - minY)) * this.fontSize * PERCENT;
+    });
+
+    const canvasWidth = (maxX - minX) * this.fontSize * PERCENT;
+    const canvasHeight = (maxY - minY) * this.fontSize * PERCENT;
+
+    console.log('canvas size', canvasWidth, canvasHeight);
+    return { _tree: tree, canvasWidth, canvasHeight };
+  }
+  getTreeData() {
+    let _skills = this.skills;
+    // 根据层数确定字体大小
+    _skills.forEach((v) => {
+      if (v.floor > this.maxFloor) {
+        this.maxFloor = v.floor;
+      }
+    });
+    this.nodeWidth = this.deviceWidth / (2 * this.maxFloor);
+
+    // 获取每个skill渲染的位置
+    let startHeight = 0;
+    const l = _skills.length;
+    _skills.map((v, index) => {
+      if (index === 0) {
+        _skills[index]['y'] = this.fontSize * 2;
+        startHeight = this.fontSize * 2;
+      } else {
+        if (_skills[index - 1].floor < _skills[index].floor) {
+          _skills[index]['y'] = startHeight;
+        } else {
+          _skills[index]['y'] = startHeight += this.fontSize * 2;
+        }
+      }
+      _skills[index]['x'] = (_skills[index].floor - 1) * 2 * this.nodeWidth;
+    });
+    // 修改canvas的高度
+    this.treeheight = startHeight + 10;
+
+    // 找到每个skill的父亲
+    let i = l - 1;
+    while (i >= 0) {
+      let j = i - 1;
+      while (j >= 0 && _skills[j].floor >= _skills[i].floor) {
+        j--;
+      }
+      _skills[i]['father'] = j;
+      i--;
+    }
+    return _skills;
+  }
+}
+/**
+ * 根节点在左上角
+ * 1/20 deviceWidth
+ * 应该是从父节点右下角开始画 到 子节点的右下角
+ * 从根节点出发的每个分支的颜色要统一
+ */
+</script>

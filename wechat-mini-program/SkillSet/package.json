@@ -18,6 +18,7 @@
   "license": "MIT",
   "dependencies": {
     "d3-flextree": "^2.1.1",
+    "lodash.clonedeep": "^4.5.0",
     "wepy": "^1.6.0",
     "wepy-async-function": "^1.4.7",
     "wepy-plugin-imagemin": "^1.5.3"

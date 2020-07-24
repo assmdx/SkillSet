@@ -1,23 +1,23 @@
 <style lang="less">
-  @import '../style/weui.less';
+@import '../style/weui.less';
 </style>
 
 <template>
   <view class="page">
-    <SkillCell/>
+    <TreePanel />
   </view>
 </template>
 
 <script>
-  import wepy from 'wepy'
-  import SkillCell from '../components/skillCell'
+import wepy from 'wepy';
+import TreePanel from '../components/tree/index';
 
-  export default class Tree extends wepy.page {
-    config = {
-      navigationBarTitleText: '易画图'
-    }
-    components = {
-      SkillCell: SkillCell
-    }
-  }
+export default class Tree extends wepy.page {
+  config = {
+    navigationBarTitleText: '易画图',
+  };
+  components = {
+    TreePanel,
+  };
+}
 </script>
