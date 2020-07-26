@@ -80,6 +80,7 @@ import wepy from 'wepy';
 import TestMixin from '../../mixins/test';
 import { calTreePos } from './util';
 import COLORS from './constants';
+import cloneDeep from 'lodash.clonedeep';
 
 export default class Tree extends wepy.component {
   data = {
@@ -149,6 +150,8 @@ export default class Tree extends wepy.component {
       const { treePos, canvasWidth, canvasHeight } = calTreePos(Treedata);
       this.treeHeight = canvasHeight > 1000 ? canvasHeight + 'px' : '1000px';
       let _ctx = wx.createCanvasContext('skillTree', this);
+      // 每次重新画的时候清除画布
+      _ctx.clearRect(0, 0, 2000, 2000);
       _ctx.setFontSize(this.fontSize);
       treePos.each((node) => {
         _ctx.fillText(node.data.name, node.x, node.y, this.nodeWith);
@@ -175,7 +178,8 @@ export default class Tree extends wepy.component {
     },
   };
   getTreeData() {
-    let _skills = this.skills;
+    // 深拷贝以下，下一次还可以重复使用，不污染this.skills
+    let _skills = cloneDeep(this.skills);
     // 根据层数确定字体大小
     _skills.forEach((v) => {
       if (v.floor > this.maxFloor) {
@@ -183,7 +187,6 @@ export default class Tree extends wepy.component {
       }
     });
     this.nodeWidth = this.deviceWidth / (2 * this.maxFloor);
-
     // 获取每个skill渲染的位置
     let startHeight = 0;
     const l = _skills.length;
