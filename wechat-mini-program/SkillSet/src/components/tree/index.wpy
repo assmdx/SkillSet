@@ -13,10 +13,10 @@
 }
 </style>
 <template>
-  <canvas
-    canvas-id="skillTree"
-    style="width: 100%; height: {{treeHeight}}"
-  ></canvas>
+  <view style="width:{{deviceWidth}}px;height:{{deviceHeight}}px;overflow:scroll;">
+    <canvas canvas-id="skillTree" style="width: 2000px; height: 2000px"></canvas>
+  </view>
+  
   <view class="page__bd">
     <repeat for="{{skills}}" key="index" item="item">
       <view class="weui-cells weui-cells_after-title">
@@ -85,6 +85,7 @@ export default class Tree extends wepy.component {
   data = {
     newSkill: '',
     deviceWidth: wx.getSystemInfoSync().windowWidth,
+    deviceHeight: wx.getSystemInfoSync().windowHeight,
     fontSize: 15,
     nodeWidth: 0,
     space: 10,
