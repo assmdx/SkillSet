@@ -150,14 +150,17 @@ export default class Tree extends wepy.component {
       const { treePos, canvasWidth, canvasHeight } = calTreePos(Treedata);
       this.treeHeight = canvasHeight > 1000 ? canvasHeight + 'px' : '1000px';
       let _ctx = wx.createCanvasContext('skillTree', this);
+
       // 每次重新画的时候清除画布
       _ctx.clearRect(0, 0, 2000, 2000);
       _ctx.setFontSize(this.fontSize);
+
       treePos.each((node) => {
         _ctx.fillText(node.data.name, node.x, node.y, this.nodeWith);
-        _ctx.setLineWidth(1);
+        _ctx.setLineWidth(4);
+        
         (node.children || []).forEach((cNode) => {
-          const sX = node.x,
+          const sX = node.x + _ctx.measureText(node.data.name).width,
             sY = node.y,
             eX = cNode.x,
             eY = cNode.y;
@@ -170,6 +173,16 @@ export default class Tree extends wepy.component {
           _ctx.beginPath();
           _ctx.moveTo(sX, sY);
           _ctx.quadraticCurveTo(cpx, cpy, eX, eY);
+          _ctx.stroke();
+
+          // 绘制节点的底边
+          const nodeNameWidth = _ctx.measureText(cNode.data.name).width;
+          const lineSy = cNode.y;
+          const lineEx = cNode.x + nodeNameWidth;
+          _ctx.beginPath();
+          _ctx.moveTo(eX, eY);
+          _ctx.setStrokeStyle(lineColor);
+          _ctx.lineTo(lineEx, lineSy);
           _ctx.stroke();
         });
       });
